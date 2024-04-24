@@ -119,7 +119,7 @@ If hotkeys
 	Menu Settings, Check, &Hotkeys
 If extrahotkeys {
 	PrepRunGui()
-	Gui RunGui:Show, x9999 y9999 NoActivate
+	Gui RunGui:Show, x9999 y9999
 	Gui RunGui:Cancel
 	Menu Settings, Check, &Extra hotkeys
 } Else {
