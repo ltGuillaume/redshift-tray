@@ -1,5 +1,5 @@
 ; Redshift Tray - https://github.com/ltGuillaume/Redshift-Tray
-;@Ahk2Exe-SetFileVersion 2.2.3
+;@Ahk2Exe-SetFileVersion 2.3.0
 
 ; AHK 32-bit keybd hook with #If breaks if other apps slow down keybd processing (https://www.autohotkey.com/boards/viewtopic.php?t=82158)
 ;@Ahk2Exe-Bin Unicode 64*
@@ -855,10 +855,11 @@ AppsKey & End::
 	KeyWait AppsKey
 	DllCall("PowrProf\SetSuspendState", "int", 1, "int", 0, "int", 0)
 Return
-AppsKey & ,::Send {Media_Prev}
-AppsKey & .::Send {Media_Next}
-AppsKey & /::Send {Media_Stop}
+AppsKey & [::Send {Media_Prev}
+AppsKey & ]::Send {Media_Next}
+AppsKey & BackSpace::Send {Media_Stop}
 AppsKey & Shift::Send {Media_Play_Pause}
+AppsKey & Space::Send {Media_Play_Pause}
 AppsKey & m::Send {Volume_Mute}
 AppsKey & p::Send #p
 AppsKey::Send {AppsKey}
