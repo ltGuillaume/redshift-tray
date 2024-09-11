@@ -1,5 +1,5 @@
 ; Redshift Tray - https://github.com/ltGuillaume/Redshift-Tray
-;@Ahk2Exe-SetFileVersion 2.3.0
+;@Ahk2Exe-SetFileVersion 2.3.1
 
 ; AHK 32-bit keybd hook with #If breaks if other apps slow down keybd processing (https://www.autohotkey.com/boards/viewtopic.php?t=82158)
 ;@Ahk2Exe-Bin Unicode 64*
@@ -437,7 +437,7 @@ RemoteDesktopMode:
 			Send {Alt Up}{Ctrl Up}{RAlt Up}{RCtrl Up}
 			Hotkey RAlt & `,, Off
 			Hotkey RAlt & ., Off
-;			Sleep, 250
+			Sleep, 250
 			rdpclient = 1
 			Suspend Off
 			ClearMem()
@@ -805,14 +805,24 @@ MButton::TaskMgr()
 WheelUp::
 	If WinActive("ahk_class TscShellContainerClass") Or WinActive("ahk_exe VirtualBoxVM.exe")
 		SetVolume("+2")
-	Else
-		Send {Volume_Up}
+	Else {
+		MouseGetPos,,,, wheelcontrol
+		If wheelcontrol = MSTaskListWClass1	; Skip if not scrolling on tasklist
+			Send {Volume_Up}
+		Else
+			Send {WheelUp}
+	}
 Return
 WheelDown::
 	If WinActive("ahk_class TscShellContainerClass") Or WinActive("ahk_exe VirtualBoxVM.exe")
 		SetVolume("-2")
-	Else
-		Send {Volume_Down}
+	Else {
+		MouseGetPos,,,, wheelcontrol
+		If wheelcontrol = MSTaskListWClass1	; Skip if not scrolling on tasklist
+			Send {Volume_Down}
+		Else
+			Send {WheelDown}
+	}
 Return
 
 #If extrahotkeys And !rdpclient
@@ -1033,7 +1043,13 @@ HideTaskbar() {	; https://www.autohotkey.com/boards/viewtopic.php?t=39123
 	DllCall("Shell32\SHAppBarMessage", "UInt", 10, "Ptr", &taskbar)	; 10 = ABM_SETSTATE
 }
 
-TaskMgr() {	; Don't show Task Manager when clicking on buttons
+TaskMgr() {
+	MouseGetPos,,,, control
+	If control <> MSTaskListWClass1	; Skip if not clicking on task list
+	{
+		Click Middle
+		Return
+	}
 	WinGetClass before, A
 	If Instr(before, "TrayWnd",, 0) {
 		Send !{Esc}
